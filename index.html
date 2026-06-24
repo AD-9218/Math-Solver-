@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI Math Learning Platform for child (std 1-3)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <div class="loader-overlay" id="loaderOverlay">
+    <div class="loader"></div>
+    <p>Loading AI Math Learning...</p>
+  </div>
+  <header class="topbar">
+    <div class="brand">
+      <div class="logo">AI</div>
+      <div>
+        <h1>Math Learning Platform</h1>
+        <p>For child(Std 1–4) | Smart learning for all</p>
+      </div>
+    </div>
+    <div class="header-actions">
+      <div class="language-switcher" id="languageSwitcher">
+        <button data-lang="en" class="active">EN</button>
+        <button data-lang="hi">HI</button>
+        <button data-lang="gu">GU</button>
+      </div>
+      <button class="mode-toggle" id="modeToggle">Dark</button>
+    </div>
+  </header>
+
+  <div id="appMessage" class="app-message hidden"></div>
+  <nav class="main-nav">
+    <a href="#home">Home</a>
+    <a href="#calculator">Calculator</a>
+    <a href="#algebra">Algebra</a>
+    <a href="#geometry">Geometry</a>
+    <a href="#graph">Graph</a>
+    <a href="#practice">Practice</a>
+  </nav>
+  <main class="container">
+    <section class="hero" id="home">
+      <div class="hero-copy">
+        <h2 data-i18n="heroTitle">Interactive AI Math Learning for Grades 1-12</h2>
+        <p data-i18n="heroText">Practice concepts, solve equations, plot graphs, and monitor progress in a modern, animated learning environment.</p>
+        <div class="hero-stats">
+          <div>
+            <strong id="currentPoints">0</strong>
+            <span data-i18n="points">Points</span>
+          </div>
+          <div>
+            <span data-i18n="Beginner"> <b>Beginner</b> Level</span>
+          </div>
+          <div>
+            <strong id="topicsLearned">0</strong>
+            <span data-i18n="topics">Topics Covered</span>
+          </div>
+        </div>
+      </div>
+      <div class="hero-image">
+        <div class="card accent-card">
+          <h3 data-i18n="quickStart">Quick Start</h3>
+          <p data-i18n="quickStartText">Use the navigation cards to move through Calculator, Algebra, Geometry, Graphs, and Quizzes.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="grid-section cards-grid" aria-label="Quick cards">
+      <article class="feature-card" onclick="document.querySelector('#calculator').scrollIntoView({ behavior: 'smooth' })">
+        <h3 data-i18n="calcCard">Calculator</h3>
+        <p data-i18n="calcCardText">Solve everyday math with fractions, percentages, and safe calculation.</p>
+      </article>
+      <article class="feature-card" onclick="document.querySelector('#algebra').scrollIntoView({ behavior: 'smooth' })">
+        <h3 data-i18n="algCard">Algebra</h3>
+        <p data-i18n="algCardText">Solve linear equations and simplify expressions with step-by-step explanations.</p>
+      </article>
+      <article class="feature-card" onclick="document.querySelector('#geometry').scrollIntoView({ behavior: 'smooth' })">
+        <h3 data-i18n="geomCard">Geometry</h3>
+        <p data-i18n="geomCardText">Compute area and perimeter for common shapes with formulas and guided steps.</p>
+      </article>
+      <article class="feature-card" onclick="document.querySelector('#graph').scrollIntoView({ behavior: 'smooth' })">
+        <h3 data-i18n="graphCard">Graph Plotter</h3>
+        <p data-i18n="graphCardText">Visualize equations instantly with an interactive graph tool.</p>
+      </article>
+      <article class="feature-card" onclick="document.querySelector('#practice').scrollIntoView({ behavior: 'smooth' })">
+        <h3 data-i18n="quizCard">Practice Quiz</h3>
+        <p data-i18n="quizCardText">Build confidence with timed quizzes and rich feedback.</p>
+      </article>
+      <article class="feature-card" onclick="document.querySelector('#history').scrollIntoView({ behavior: 'smooth' })">
+        <h3 data-i18n="historyCard">History</h3>
+        <p data-i18n="historyCardText">Review solved problems and track weak topics.</p>
+      </article>
+    </section>
+
+    <section class="module-section" id="calculator">
+      <div class="section-header">
+        <h2 data-i18n="calculatorTitle">Calculator</h2>
+        <p data-i18n="calculatorDesc">Use the smart calculator for arithmetic, fractions, and percent problems.</p>
+      </div>
+      <div class="module-grid">
+        <div class="panel card">
+          <label for="calcInput" data-i18n="enterExpression">Enter expression</label>
+          <div class="input-row">
+            <input id="calcInput" type="text" placeholder="3 + 5 * 2" />
+            <button class="mic-button" onclick="startVoiceInput('calcInput')">🎙</button>
+          </div>
+          <div class="button-row">
+            <button onclick="calculateValue()" data-i18n="calculateBtn">Calculate</button>
+            <button onclick="clearCalculator()" data-i18n="clearBtn">Clear</button>
+          </div>
+          <div class="output-card">
+            <p data-i18n="result">Result</p>
+            <div id="calcResult">0</div>
+          </div>
+          <div id="calcExplanation" class="explanation-panel"></div>
+        </div>
+        <div class="panel card info-panel">
+          <h3 data-i18n="calculatorGuide">Calculator Guide</h3>
+          <ul>
+            <li data-i18n="calcTips1">Use +, -, *, /</li>
+            <li data-i18n="calcTips2">Use fraction syntax like 1/2</li>
+            <li data-i18n="calcTips3">Use % for percent values</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section class="module-section" id="algebra">
+      <div class="section-header">
+        <h2 data-i18n="algebraTitle">Algebra Solver</h2>
+        <p data-i18n="algebraDesc">Solve linear equations and simplify expressions with step-by-step guidance.</p>
+      </div>
+      <div class="module-grid">
+        <div class="panel card">
+          <label for="equationInput" data-i18n="eqInput">Enter equation</label>
+          <div class="input-row"><input id="equationInput" type="text" placeholder="2x + 5 = 15" /><button class="mic-button" onclick="startVoiceInput('equationInput')">🎙</button></div>
+          <button onclick="solveEquation()" data-i18n="solveEquations">Solve Equation</button>
+          <div class="output-card" id="algebraResult"></div>
+        </div>
+        <div class="panel card">
+          <label for="expressionInput" data-i18n="expressionInput">Enter expression</label>
+          <div class="input-row"><input id="expressionInput" type="text" placeholder="3x + 4x - 2" /><button class="mic-button" onclick="startVoiceInput('expressionInput')">🎙</button></div>
+          <button onclick="simplifyExpression()" data-i18n="simplifyBtn">Simplify Expression</button>
+          <div class="output-card" id="simplifyResult"></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="module-section" id="geometry">
+      <div class="section-header">
+        <h2 data-i18n="geometryTitle">Geometry Solver</h2>
+        <p data-i18n="geometryDesc">Calculate area and perimeter for shapes with clear solution steps.</p>
+      </div>
+      <div class="module-grid">
+        <div class="panel card">
+          <label for="shapeSelect" data-i18n="chooseShape">Choose Shape</label>
+          <select id="shapeSelect" onchange="renderShapeInputs()">
+            <option value="circle" data-i18n="circle">Circle</option>
+            <option value="triangle" data-i18n="triangle">Triangle</option>
+            <option value="rectangle" data-i18n="rectangle">Rectangle</option>
+          </select>
+          <div id="shapeInputs" class="shape-inputs"></div>
+          <div class="button-row">
+            <button onclick="calculateGeometry()" data-i18n="calculateGeometry">Calculate</button>
+            <button onclick="clearGeometry()" data-i18n="clearBtn">Clear</button>
+          </div>
+          <div class="output-card" id="geometryResult"></div>
+        </div>
+        <div class="panel card info-panel">
+          <h3 data-i18n="geometryTipsTitle">Why it matters</h3>
+          <p data-i18n="geometryTipsText">Understanding formulas helps you solve measurement problems in real life.</p>
+          <ul>
+            <li data-i18n="geomTip1">Circle uses π</li>
+            <li data-i18n="geomTip2">Triangle uses base and height</li>
+            <li data-i18n="geomTip3">Rectangle uses length and width</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section class="module-section" id="graph">
+      <div class="section-header">
+        <h2 data-i18n="graphTitle">Graph Plotter</h2>
+        <p data-i18n="graphDesc">Plot equations interactively and explore how graphs behave.</p>
+      </div>
+      <div class="module-grid graph-grid">
+        <div class="panel card">
+          <label for="graphInput" data-i18n="enterEquation">Enter equation</label>
+          <div class="input-row"><input id="graphInput" type="text" placeholder="y = x^2 - 2x + 1" /><button class="mic-button" onclick="startVoiceInput('graphInput')">🎙</button></div>
+          <button onclick="plotGraph()" data-i18n="plotGraphBtn">Plot Graph</button>
+          <div class="output-card" id="graphExplanation"></div>
+        </div>
+        <div class="panel card chart-card">
+          <canvas id="graphCanvas" aria-label="Graph chart"></canvas>
+        </div>
+      </div>
+    </section>
+
+    <section class="module-section" id="practice">
+      <div class="section-header">
+        <h2 data-i18n="practiceTitle">Practice Quiz</h2>
+        <p data-i18n="practiceDesc">Challenge yourself with questions, earn points, and review correct answers.</p>
+      </div>
+      <div class="module-grid">
+        <div class="panel card quiz-panel">
+          <div class="quiz-header">
+            <strong id="quizTopic">Mixed Topics</strong>
+            <span id="quizTimer">30s</span>
+          </div>
+          <div id="quizQuestion" class="quiz-question"></div>
+          <div id="quizOptions" class="quiz-options"></div>
+          <div class="button-row">
+            <button id="quizStartButton" type="button" onclick="startQuiz()" data-i18n="startQuizBtn">Start Quiz</button>
+            <button id="quizNextButton" type="button" onclick="nextQuizQuestion()" data-i18n="nextBtn">Next</button>
+          </div>
+          <div class="score-card">
+            <p><strong data-i18n="score">Score</strong>: <span id="quizScore">0</span></p>
+            <p><strong data-i18n="correctAnswers">Correct</strong>: <span id="quizCorrect">0</span></p>
+          </div>
+          <div id="quizFeedback" class="feedback-panel"></div>
+        </div>
+        <div class="panel card info-panel">
+          <h3 data-i18n="quizTipsTitle">Quiz Tips</h3>
+          <ul>
+            <li data-i18n="quizTip1">Read each question carefully</li>
+            <li data-i18n="quizTip2">Use what you solved earlier</li>
+            <li data-i18n="quizTip3">Review explanations after answers</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section class="module-section" id="history">
+      <div class="section-header">
+        <h2 data-i18n="historyTitle">History & Performance</h2>
+        <p data-i18n="historyDesc">Review solved problems, assess weak areas, and revisit earlier solutions.</p>
+      </div>
+      <div class="module-grid history-grid">
+        <div class="panel card history-panel">
+          <h3 data-i18n="recentHistory">Recent History</h3>
+          <div id="historyList" class="history-list"></div>
+          <button onclick="clearHistory()" class="small-button" data-i18n="clearHistory">Clear History</button>
+        </div>
+        <div class="panel card stats-panel">
+          <h3 data-i18n="performanceSummary">Performance Summary</h3>
+          <div class="performance-row"><span data-i18n="weakArea">Weak Areas</span>: <span id="weakAreas">None yet</span></div>
+          <div class="performance-row"><span data-i18n="topicAccuracy">Topic Accuracy</span>: <span id="topicAccuracy">0%</span></div>
+          <div class="performance-row"><span data-i18n="suggestions">Suggestions</span>: <span id="suggestions">Keep practicing mixed topics.</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="module-section" id="extras">
+      <div class="section-header">
+        <h2 data-i18n="extrasTitle">Extras</h2>
+        <p data-i18n="extrasDesc">Voice input, activity preview, and future OCR support keep learning exciting.</p>
+      </div>
+      <div class="mcq-filter-container" style="margin: 15px 0; display: flex; align-items: center; gap: 10px;">
+  <label for="onlyMcqToggle" style="font-size: 1rem; font-weight: bold; cursor: pointer; user-select: none;">
+    ✨ Solve Multiple Choice Questions (MCQ) only
+  </label>
+</div>
+      <div class="module-grid extras-grid">
+        <div class="panel card image-panel">
+          <label data-i18n="uploadImage">Upload a math image</label>
+          <input type="file" accept="image/jpeg,image/png" id="imageInput" onchange="processImage(event)" />
+          <div class="image-preview" id="imagePreview">Preview here</div>
+          <div class="ocr-actions">
+            <button id="extractButton" onclick="extractText()" disabled>Extract Text</button>
+          </div>
+          <div class="ocr-input-row">
+            <label for="output">Extracted math</label>
+            <input id="output" type="text" placeholder="2x + 5 = 15" />
+          </div>
+          <div class="status-message" id="ocrRaw"></div>
+          <div class="status-message" id="ocrCleaned"></div>
+          <div class="ocr-actions">
+            <button id="solveImageTextButton" onclick="solveMath()" disabled>Solve</button>
+            <div class="mini-loader" id="ocrLoader" hidden></div>
+          </div>
+          <div class="status-message" id="ocrStatus"></div>
+          <div class="output-card ocr-output" id="ocrSolution"></div>
+        </div>
+        <div class="panel card point-panel">
+          <h3 data-i18n="gamificationTitle">Gamification</h3>
+          <p data-i18n="gamificationText">Earn points and level up as you complete problems and quizzes.</p>
+          <div class="progress-card">
+            <div><strong data-i18n="currentLevel">Current Level</strong></div>
+            <div id="currentLevelLabel">Beginner</div>
+          </div>
+        </div>
+      </div>
+      <div class="mcq-filter-container" style="margin: 15px 0; display: flex; align-items: center; gap: 10px;">
+  <label for="onlyMcqToggle" style="font-size: 1rem; font-weight: bold; cursor: pointer; user-select: none;">
+   This Math Solver give Some wrong Answer and Some Error 
+  </label>
+</div>
+    </section>
+  </main>
+  <footer class="footer">
+    <p data-i18n="footerText">Designed for easy understanding and stronger math confidence.</p>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/tesseract.js@4.0.2/dist/tesseract.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjs@11.8.0/lib/browser/math.js"></script>
+  <script src="algebra.js"></script>
+  <script src="graph.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI Math Learning Platform (Std 1–12)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <div class="loader-overlay" id="loaderOverlay">
+    <div class="loader"></div>
+    <p>Loading AI Math Learning...</p>
+  </div>
+  <header class="topbar">
+    <div class="brand">
+      <div class="logo">AI</div>
+      <div>
+        <h1>Math Learning Platform</h1>
+        <p>Std 1–12 | Smart learning for all</p>
+      </div>
+    </div>
+    <div class="header-actions">
+      <div class="language-switcher" id="languageSwitcher">
+        <button data-lang="en" class="active">EN</button>
+        <button data-lang="hi">HI</button>
+        <button data-lang="gu">GU</button>
+      </div>
+      <button class="mode-toggle" id="modeToggle">Dark</button>
+    </div>
+  </header>
+  <div id="appMessage" class="app-message hidden"></div>
+  <nav class="main-nav">
+    <a href="#home">Home</a>
+    <a href="#calculator">Calculator</a>
+    <a href="#algebra">Algebra</a>
+    <a href="#geometry">Geometry</a>
+    <a href="#graph">Graph</a>
+    <a href="#practice">Practice</a>
+  </nav>
+  <main class="container">
+    <section class="hero" id="home">
+      <div class="hero-copy">
+        <h2 data-i18n="heroTitle">Interactive AI Math Learning for Grades 1–12</h2>
+        <p data-i18n="heroText">Practice concepts, solve equations, plot graphs, and monitor progress in a modern, animated learning environment.</p>
+        <div class="hero-stats">
+          <div>
+            <strong id="currentPoints">0</strong>
+            <span data-i18n="points">Points</span>
+          </div>
+          <div>
+            <strong id="userLevel">Beginner</strong>
+            <span data-i18n="level">Level</span>
+          </div>
+          <div>
+            <strong id="topicsLearned">0</strong>
+            <span data-i18n="topics">Topics Covered</span>
+          </div>
+        </div>
+      </div>
+      <div class="hero-image">
+        <div class="card accent-card">
+          <h3 data-i18n="quickStart">Quick Start</h3>
+          <p data-i18n="quickStartText">Use the navigation cards to move through Calculator, Algebra, Geometry, Graphs, and Quizzes.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="grid-section cards-grid" aria-label="Quick cards">
+      <article class="feature-card" onclick="document.querySelector('#calculator').scrollIntoView({ behavior: 'smooth' })">
+        <h3 data-i18n="calcCard">Calculator</h3>
+        <p data-i18n="calcCardText">Solve everyday math with fractions, percentages, and safe calculation.</p>
+      </article>
+      <article class="feature-card" onclick="document.querySelector('#algebra').scrollIntoView({ behavior: 'smooth' })">
+        <h3 data-i18n="algCard">Algebra</h3>
+        <p data-i18n="algCardText">Solve linear equations and simplify expressions with step-by-step explanations.</p>
+      </article>
+      <article class="feature-card" onclick="document.querySelector('#geometry').scrollIntoView({ behavior: 'smooth' })">
+        <h3 data-i18n="geomCard">Geometry</h3>
+        <p data-i18n="geomCardText">Compute area and perimeter for common shapes with formulas and guided steps.</p>
+      </article>
+      <article class="feature-card" onclick="document.querySelector('#graph').scrollIntoView({ behavior: 'smooth' })">
+        <h3 data-i18n="graphCard">Graph Plotter</h3>
+        <p data-i18n="graphCardText">Visualize equations instantly with an interactive graph tool.</p>
+      </article>
+      <article class="feature-card" onclick="document.querySelector('#practice').scrollIntoView({ behavior: 'smooth' })">
+        <h3 data-i18n="quizCard">Practice Quiz</h3>
+        <p data-i18n="quizCardText">Build confidence with timed quizzes and rich feedback.</p>
+      </article>
+      <article class="feature-card" onclick="document.querySelector('#history').scrollIntoView({ behavior: 'smooth' })">
+        <h3 data-i18n="historyCard">History</h3>
+        <p data-i18n="historyCardText">Review solved problems and track weak topics.</p>
+      </article>
+    </section>
+
+    <section class="module-section" id="calculator">
+      <div class="section-header">
+        <h2 data-i18n="calculatorTitle">Calculator</h2>
+        <p data-i18n="calculatorDesc">Use the smart calculator for arithmetic, fractions, and percent problems.</p>
+      </div>
+      <div class="module-grid">
+        <div class="panel card">
+          <label for="calcInput" data-i18n="enterExpression">Enter expression</label>
+          <div class="input-row">
+            <input id="calcInput" type="text" placeholder="3 + 5 * 2" />
+            <button class="mic-button" onclick="startVoiceInput('calcInput')">🎙</button>
+          </div>
+          <div class="button-row">
+            <button onclick="calculateValue()" data-i18n="calculateBtn">Calculate</button>
+            <button onclick="clearCalculator()" data-i18n="clearBtn">Clear</button>
+          </div>
+          <div class="output-card">
+            <p data-i18n="result">Result</p>
+            <div id="calcResult">0</div>
+          </div>
+          <div id="calcExplanation" class="explanation-panel"></div>
+        </div>
+        <div class="panel card info-panel">
+          <h3 data-i18n="calculatorGuide">Calculator Guide</h3>
+          <ul>
+            <li data-i18n="calcTips1">Use +, -, *, /</li>
+            <li data-i18n="calcTips2">Use fraction syntax like 1/2</li>
+            <li data-i18n="calcTips3">Use % for percent values</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section class="module-section" id="algebra">
+      <div class="section-header">
+        <h2 data-i18n="algebraTitle">Algebra Solver</h2>
+        <p data-i18n="algebraDesc">Solve linear equations and simplify expressions with step-by-step guidance.</p>
+      </div>
+      <div class="module-grid">
+        <div class="panel card">
+          <label for="equationInput" data-i18n="eqInput">Enter equation</label>
+          <div class="input-row"><input id="equationInput" type="text" placeholder="2x + 5 = 15" /><button class="mic-button" onclick="startVoiceInput('equationInput')">🎙</button></div>
+          <button onclick="solveEquation()">Solve Equation</button>
+          <div class="output-card" id="algebraResult"></div>
+        </div>
+        <div class="panel card">
+          <label for="expressionInput" data-i18n="expressionInput">Enter expression</label>
+          <div class="input-row"><input id="expressionInput" type="text" placeholder="3x + 4x - 2" /><button class="mic-button" onclick="startVoiceInput('expressionInput')">🎙</button></div>
+          <button onclick="simplifyExpression()">Simplify Expression</button>
+          <div class="output-card" id="simplifyResult"></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="module-section" id="geometry">
+      <div class="section-header">
+        <h2 data-i18n="geometryTitle">Geometry Solver</h2>
+        <p data-i18n="geometryDesc">Calculate area and perimeter for shapes with clear solution steps.</p>
+      </div>
+      <div class="module-grid">
+        <div class="panel card">
+          <label for="shapeSelect" data-i18n="chooseShape">Choose Shape</label>
+          <select id="shapeSelect" onchange="renderShapeInputs()">
+            <option value="circle" data-i18n="circle">Circle</option>
+            <option value="triangle" data-i18n="triangle">Triangle</option>
+            <option value="rectangle" data-i18n="rectangle">Rectangle</option>
+          </select>
+          <div id="shapeInputs" class="shape-inputs"></div>
+          <div class="button-row">
+            <button onclick="calculateGeometry()">Calculate</button>
+            <button onclick="clearGeometry()">Clear</button>
+          </div>
+          <div class="output-card" id="geometryResult"></div>
+        </div>
+        <div class="panel card info-panel">
+          <h3 data-i18n="geometryTipsTitle">Why it matters</h3>
+          <p data-i18n="geometryTipsText">Understanding formulas helps you solve measurement problems in real life.</p>
+          <ul>
+            <li data-i18n="geomTip1">Circle uses π</li>
+            <li data-i18n="geomTip2">Triangle uses base and height</li>
+            <li data-i18n="geomTip3">Rectangle uses length and width</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section class="module-section" id="graph">
+      <div class="section-header">
+        <h2 data-i18n="graphTitle">Graph Plotter</h2>
+        <p data-i18n="graphDesc">Plot equations interactively and explore how graphs behave.</p>
+      </div>
+      <div class="module-grid graph-grid">
+        <div class="panel card">
+          <label for="graphInput" data-i18n="enterEquation">Enter equation</label>
+          <div class="input-row"><input id="graphInput" type="text" placeholder="y = x^2 - 2x + 1" /><button class="mic-button" onclick="startVoiceInput('graphInput')">🎙</button></div>
+          <button onclick="plotGraph()">Plot Graph</button>
+          <div class="output-card" id="graphExplanation"></div>
+        </div>
+        <div class="panel card chart-card">
+          <canvas id="graphCanvas" aria-label="Graph chart"></canvas>
+        </div>
+      </div>
+    </section>
+
+    <section class="module-section" id="practice">
+      <div class="section-header">
+        <h2 data-i18n="practiceTitle">Practice Quiz</h2>
+        <p data-i18n="practiceDesc">Challenge yourself with questions, earn points, and review correct answers.</p>
+      </div>
+      <div class="module-grid">
+        <div class="panel card quiz-panel">
+          <div class="quiz-header">
+            <strong id="quizTopic">Mixed Topics</strong>
+            <span id="quizTimer">30s</span>
+          </div>
+          <div id="quizQuestion" class="quiz-question">Please click Start Quiz to begin.</div>
+          <div id="quizOptions" class="quiz-options"></div>
+          <div class="button-row">
+            <button id="quizStartButton" type="button" onclick="startQuiz()">Start Quiz</button>
+            <button id="quizNextButton" type="button" onclick="nextQuizQuestion()" style="display:none;">Next</button>
+          </div>
+          <div class="score-card">
+            <p><strong>Score</strong>: <span id="quizScore">0</span></p>
+            <p><strong>Correct</strong>: <span id="quizCorrect">0</span></p>
+          </div>
+          <div id="quizFeedback" class="feedback-panel"></div>
+        </div>
+        <div class="panel card info-panel">
+          <h3 data-i18n="quizTipsTitle">Quiz Tips</h3>
+          <ul>
+            <li data-i18n="quizTip1">Read each question carefully</li>
+            <li data-i18n="quizTip2">Use what you solved earlier</li>
+            <li data-i18n="quizTip3">Review explanations after answers</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section class="module-section" id="history">
+      <div class="section-header">
+        <h2 data-i18n="historyTitle">History & Performance</h2>
+        <p data-i18n="historyDesc">Review solved problems, assess weak areas, and revisit earlier solutions.</p>
+      </div>
+      <div class="module-grid history-grid">
+        <div class="panel card history-panel">
+          <h3 data-i18n="recentHistory">Recent History</h3>
+          <div id="historyList" class="history-list"></div>
+          <button onclick="clearHistory()" class="small-button">Clear History</button>
+        </div>
+        <div class="panel card stats-panel">
+          <h3 data-i18n="performanceSummary">Performance Summary</h3>
+          <div class="performance-row"><span>Weak Areas</span>: <span id="weakAreas">None yet</span></div>
+          <div class="performance-row"><span>Topic Accuracy</span>: <span id="topicAccuracy">0%</span></div>
+          <div class="performance-row"><span>Suggestions</span>: <span id="suggestions">Keep practicing mixed topics.</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="module-section" id="extras">
+      <div class="section-header">
+        <h2 data-i18n="extrasTitle">Extras</h2>
+        <p data-i18n="extrasDesc">Voice input, activity preview, and built-in client OCR support keep learning exciting.</p>
+      </div>
+      <div class="module-grid extras-grid">
+        <div class="panel card image-panel">
+          <label>Upload a math image</label>
+          <input type="file" accept="image/jpeg,image/png" id="imageInput" onchange="processImage(event)" />
+          <div class="image-preview" id="imagePreview">Preview here</div>
+          <div class="ocr-actions">
+            <button id="extractButton" onclick="extractText()">Extract Text</button>
+          </div>
+          <div class="ocr-input-row">
+            <label for="output">Extracted math</label>
+            <input id="output" type="text" placeholder="2x + 5 = 15" />
+          </div>
+          <div class="status-message" id="ocrRaw"></div>
+          <div class="status-message" id="ocrCleaned"></div>
+          <div class="ocr-actions">
+            <button id="solveImageTextButton" onclick="solveMath()">Solve</button>
+            <div class="mini-loader" id="ocrLoader" hidden></div>
+          </div>
+          <div class="status-message" id="ocrStatus"></div>
+          <div class="output-card ocr-output" id="ocrSolution"></div>
+        </div>
+        <div class="panel card point-panel">
+          <h3 data-i18n="gamificationTitle">Gamification</h3>
+          <p data-i18n="gamificationText">Earn points and level up as you complete problems and quizzes.</p>
+          <div class="progress-card">
+            <div><strong>Current Level</strong></div>
+            <div id="currentLevelLabel">Beginner</div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+  <footer class="footer">
+    <p data-i18n="footerText">Designed for easy understanding and stronger math confidence.</p>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/tesseract.js@4.0.2/dist/tesseract.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjs@11.8.0/lib/browser/math.js"></script>
+  <script src="test_normalize.js"></script>
+  <script src="algebra.js"></script>
+  <script src="graph.js"></script>
+  <script src="script.js"></script>
+</body>
+</html> -->
