@@ -46,7 +46,7 @@ Interactive-AI-Math-Learning/
 ├── script.js
 └── README.md
 
-## ▶️ How to Run
+**##** ▶️ How to Run
 
 ### Method 1: Download ZIP
 
